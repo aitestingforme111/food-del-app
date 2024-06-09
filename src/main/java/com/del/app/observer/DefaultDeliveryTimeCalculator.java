@@ -2,8 +2,6 @@ package com.del.app.observer;
 
 import org.springframework.stereotype.Service;
 
-import java.util.concurrent.TimeUnit;
-
 @Service
 public class DefaultDeliveryTimeCalculator implements DeliveryTimeCalculator {
 
@@ -15,15 +13,12 @@ public class DefaultDeliveryTimeCalculator implements DeliveryTimeCalculator {
       double estimatedTimeInMinutes = distance / AVERAGE_SPEED_KM_PER_MINUTE;
       return (long) Math.ceil(estimatedTimeInMinutes);
     } else {
-      // Handle cases where distance calculation fails (optional)
-      return null; // Or set a default value
+      return null;
     }
   }
 
-  // Replace with your actual average speed based on your region and delivery type
-  private static final double AVERAGE_SPEED_KM_PER_MINUTE = 0.02; // Adjust as needed (e.g., for car, bike)
+  private static final double AVERAGE_SPEED_KM_PER_MINUTE = 0.02;
 
-  // Implement your distance calculation logic based on latitude and longitude
   private Double calculateDistance(double restaurantLatitude, double restaurantLongitude, double customerLatitude, double customerLongitude) {
     final int earthRadius = 6371;
 

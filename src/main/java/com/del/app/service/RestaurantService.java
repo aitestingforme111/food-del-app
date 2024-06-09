@@ -15,12 +15,10 @@ import java.util.List;
 public class RestaurantService {
 
   private final RestaurantRepository restaurantRepository;
-  private final MenuItemService menuItemService; // Inject MenuItemService
 
   @Autowired
-  public RestaurantService(RestaurantRepository restaurantRepository, MenuItemService menuItemService) {
+  public RestaurantService(RestaurantRepository restaurantRepository) {
     this.restaurantRepository = restaurantRepository;
-    this.menuItemService = menuItemService;
   }
 
   public Restaurant createRestaurant(Restaurant restaurant) throws RestaurantValidationException {

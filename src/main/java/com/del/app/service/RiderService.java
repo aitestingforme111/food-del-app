@@ -7,10 +7,10 @@ import com.del.app.model.Rider;
 import com.del.app.model.RiderStatus;
 import com.del.app.repository.RiderRepository;
 import com.del.app.strategy.rider.RiderAssignmentStrategy;
+import com.del.app.utils.RegistrationUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -28,16 +28,15 @@ public class RiderService {
     }
 
     public Rider registerRider(Rider rider) throws RiderRegistrationException, NoSuchAlgorithmException {
-        // Validate rider data (e.g., email format)
-        if (!isValidEmail(rider.getEmail())) {
+        if (!RegistrationUtility.isValidEmail(rider.getEmail())) {
             throw new RiderRegistrationException("Invalid email format");
         }
-        // Check if rider with email already exists
+
         if (riderRepository.findByEmail(rider.getEmail()).isPresent()) {
             throw new RiderRegistrationException("Email already exists");
         }
-        // Hash password before saving (security best practice)
-        rider.setPassword(hashPassword(rider.getPassword()));
+
+        rider.setPassword(RegistrationUtility.hashPassword(rider.getPassword()));
         return riderRepository.save(rider);
     }
 
@@ -73,20 +72,5 @@ public class RiderService {
     public Rider getRiderById(Long riderId) throws RiderNotFoundException {
         return riderRepository.findById(riderId)
                 .orElseThrow(() -> new RiderNotFoundException("Rider not found with id: " + riderId));
-    }
-
-    private boolean isValidEmail(String email) {
-        return email != null && email.matches("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
-    }
-
-    private String hashPassword(String password) throws NoSuchAlgorithmException {
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-        messageDigest.update(password.getBytes());
-        byte[] hashedBytes = messageDigest.digest();
-        StringBuilder sb = new StringBuilder();
-        for (byte b : hashedBytes) {
-            sb.append(String.format("%02x", b));
-        }
-        return sb.toString();
     }
 }
