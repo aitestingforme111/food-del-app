@@ -2,6 +2,7 @@ package com.del.app.observer;
 
 import com.del.app.exceptions.RiderNotFoundException;
 import com.del.app.model.*;
+import com.del.app.service.OrderService;
 import com.del.app.service.RiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,12 +12,15 @@ public class RiderAssignmentObserver implements OrderObserver {
 
   private final RiderService riderService;
   private final DeliveryTimeCalculator deliveryTimeCalculator;
+  private final OrderService orderService;
 
   @Autowired
   public RiderAssignmentObserver(RiderService riderService,
-                                 DeliveryTimeCalculator deliveryTimeCalculator) {
+                                 DeliveryTimeCalculator deliveryTimeCalculator,
+                                 OrderService orderService) {
     this.riderService = riderService;
     this.deliveryTimeCalculator = deliveryTimeCalculator;
+    this.orderService = orderService;
   }
 
   @Override
@@ -36,7 +40,9 @@ public class RiderAssignmentObserver implements OrderObserver {
                 user.getLatitude(),
                 user.getLongitude()
                 );
+        order.setStatus(OrderStatus.PICKED_UP);
         order.setEstimatedDeliveryTime(estimatedDeliveryTime);
+        orderService.updateOrder(order);
       } catch (RiderNotFoundException e) {
         e.printStackTrace();
       }

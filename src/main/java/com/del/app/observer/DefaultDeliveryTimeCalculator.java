@@ -13,7 +13,7 @@ public class DefaultDeliveryTimeCalculator implements DeliveryTimeCalculator {
     if (distance != null) {
       // Calculate estimated time based on distance and average speed
       double estimatedTimeInMinutes = distance / AVERAGE_SPEED_KM_PER_MINUTE;
-      return TimeUnit.MINUTES.toMillis((long)Math.ceil(estimatedTimeInMinutes));
+      return (long) Math.ceil(estimatedTimeInMinutes);
     } else {
       // Handle cases where distance calculation fails (optional)
       return null; // Or set a default value
@@ -25,10 +25,17 @@ public class DefaultDeliveryTimeCalculator implements DeliveryTimeCalculator {
 
   // Implement your distance calculation logic based on latitude and longitude
   private Double calculateDistance(double restaurantLatitude, double restaurantLongitude, double customerLatitude, double customerLongitude) {
-    // You can use Haversine formula or other distance calculation methods
-    // You can find libraries or online resources for distance calculation in Java
+    final int earthRadius = 6371;
 
-    // Replace this with your implementation
-    return null;
+    double latDiff = Math.toRadians(customerLatitude - restaurantLatitude);
+    double lonDiff = Math.toRadians(customerLongitude - restaurantLongitude);
+
+    double a = Math.sin(latDiff / 2) * Math.sin(latDiff / 2) +
+            Math.cos(Math.toRadians(restaurantLatitude)) * Math.cos(Math.toRadians(customerLatitude))
+                    * Math.sin(lonDiff / 2) * Math.sin(lonDiff / 2);
+
+    double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return earthRadius * c;
   }
 }

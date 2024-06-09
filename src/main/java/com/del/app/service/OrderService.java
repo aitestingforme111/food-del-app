@@ -49,6 +49,10 @@ public class OrderService {
         return order;
     }
 
+    public Order updateOrder(Order order) {
+        return orderRepository.save(order);
+    }
+
     public Order updateOrderStatus(Long orderId, OrderStatus newStatus) {
         Order order = orderRepository.findById(orderId).get();
         order.setStatus(newStatus);

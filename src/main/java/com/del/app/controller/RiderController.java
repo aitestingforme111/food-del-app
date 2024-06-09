@@ -3,6 +3,7 @@ package com.del.app.controller;
 import com.del.app.exceptions.RiderNotFoundException;
 import com.del.app.exceptions.RiderRegistrationException;
 import com.del.app.model.Rider;
+import com.del.app.model.RiderStatus;
 import com.del.app.service.RiderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,9 +37,9 @@ public class RiderController {
   }
 
   @PutMapping("/availability/{riderId}")
-  public ResponseEntity<Void> setRiderAvailability(@PathVariable Long riderId, @RequestParam Boolean isAvailable) 
+  public ResponseEntity<Void> setRiderAvailability(@PathVariable Long riderId, @RequestParam RiderStatus riderStatus)
                                                     throws RiderNotFoundException {
-    riderService.setRiderAvailability(riderId, isAvailable);
+    riderService.setRiderAvailability(riderId, riderStatus);
     return ResponseEntity.noContent().build();
   }
 }
